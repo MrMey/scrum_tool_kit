@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>3 Column Layout</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+</head>
+
+<body>
+
+    <header id="header"><p>Header...</p></header>
+    <div id="control">
+        <input class="control_button" type="checkbox" id="mask_button" onchange="DisplaySections()" checked>masked</input>
+        <input class="control_button" type="text" id="owner_name" value="Me">Enter name</input>
+    </div>
+
+    <div id="container">
+        <script type="text/javascript">DisplaySections()</script>
+    </div>
+
+    <div id="footer-wrapper">
+        <footer id="footer"><p>Footer...</p></footer>
+    </div>
+
+</body>
+
+</html>

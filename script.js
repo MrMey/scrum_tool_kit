@@ -9,7 +9,12 @@ class Comment {
 }
 
 var sections = {'went_well': [], "to_improve":[], "action_items": []}
-var peer = new Peer()
+var peer = new Peer(options={
+    secure: true,
+    host: 'peerjs-broker.herokuapp.com', 
+    port: 443,
+    path: 'myapp'
+});
 
 function SetOwnerName(name){
     console.log(name)
@@ -101,6 +106,22 @@ class Room{
         this.last_room_id = null
         this.connections = new Map()
     }
+
+    broadcast_data(data, sending_peer){
+        this.connections.forEach(function(conn){
+            if (sending_peer != conn.peer){
+                console.log("broadcasting " + data + "to " + conn.peer)
+                conn.send(data)
+            }
+        })
+    }
+
+    broadcast_status(){
+        var peers = []
+        this.connections.forEach(function(value){peers.push(value.peer)})
+        var data = {'action': 'status', 'peers': peers}
+        this.broadcast_data(data)
+    }
 }
 var room = new Room()
 
@@ -109,24 +130,36 @@ class MyPeer{
     constructor(peer, conn) {
         this.peer = peer
         this.conn = conn
+        this.others = []
     }
 }
 var my_peer = new MyPeer(new Peer(), null)
 
 
+function GetInviteUrl(room_id){
+    return window.location.href + "?room_id=" + room_id 
+}
+
+
+function DisplayRoom(){
+    room_id = document.getElementById("room_id")
+    room_id.value = room.room_peer.id
+
+    invite_link = document.getElementById("invite_url_link")
+    url = GetInviteUrl(room.room_peer.id)
+    invite_link.href = url
+    invite_link.innerHTML = url
+}
+
+
 function CreateConnection(room, new_conn){
     new_conn.on('data', function (data) {
-        room.connections.forEach(function(conn, key, map){
-            if (new_conn.peer != conn.peer){
-                console.log("broadcasting " + data + "to " + conn.peer)
-                conn.send(data)
-            }
-        })
+        room.broadcast_data(data, new_conn.peer)
     });
     new_conn.on('close', function () {
         room.connections.delete(new_conn);
     });
-    room.connections.set(new_conn.peer.id, new_conn)
+    room.connections.set(new_conn.peer, new_conn)
     console.log("Connected to: " + new_conn.peer);
 }
 
@@ -143,22 +176,61 @@ function CreateRoom(){
         }
         console.log('room id: ' + room.room_peer.id);
         console.log("Awaiting connection...");
+        DisplayRoom()
     });
     room.room_peer.on('connection', function (c) {
         CreateConnection(room, c)
+        DisplayRoom()
+        room.broadcast_status()
     });
 }
 
 
+function DisplayPeerList(){
+    peer_list_container = document.getElementById("peer_list_container")
+    if (peer_list_container.firstChild){
+        peer_list_container.removeChild(peer_list_container.lastChild);
+    }
+    
+    peer_list = document.createElement("ul")    
+    peer_list.innerHTML = "Connected peers:"
+    my_peer.others.forEach(function(peer_id){
+        room_peer = document.createElement("li")
+        room_peer.innerHTML = peer_id
+        peer_list.appendChild(room_peer)
+    })
+    peer_list_container.appendChild(peer_list)
+}
+
+
+function UpdateStatus(status){
+    my_peer.others = []
+    status["peers"].forEach(peer_id => my_peer.others.push(peer_id))
+    DisplayPeerList()
+}
+
+
 function ConnectToPeer(peer_id){
+    console.log("Trying to connect to " + peer_id)
     my_peer.conn = my_peer.peer.connect(peer_id);
+    console.log("conn created...")
     my_peer.conn.on('open', function(){
-        my_peer.conn.send("hi");
+        console.log("Peer connection open...")
+        my_peer.conn.send({"action":"message", "msg":"hi"});
     });
     
     my_peer.conn.on('data', function(data){
         console.log(data)
+        if (data["action"] == "status"){
+            UpdateStatus(data)
+        }
     });
+}
+
+
+function ConnectToRoom(){
+    peer_id = document.getElementById("room_id").value
+    ConnectToPeer(peer_id)
 }
 
 
@@ -167,4 +239,13 @@ function SendToRoom(message){
         return
     }
     my_peer.conn.send(message)
+}
+
+
+function DetectRoom(){
+    urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.has("room_id")){
+        room_id = urlParams.get("room_id")
+        document.getElementById("room_id").value = room_id
+    }
 }

@@ -11,9 +11,23 @@
 <body>
 
     <header id="header"><p>Header...</p></header>
+    <div id="room_container">
+        <input class="control_button" type="text" id="owner_name" value="Me">Enter name</input>
+        <input id="room_id" type="text">Enter room id</input>
+        <script type="text/javascript">DetectRoom()</script>
+        <button id="create_room" onclick="CreateRoom()">Create room</button>
+        <button id="connect_room" onclick="ConnectToRoom()">Connect to room</button>
+        
+        <div id="invite_url_container">
+            <div id="invite_url_msg">Invitation link:</div>
+            <a id="invite_url_link"></a>
+        </div>
+
+        <div id="peer_list_container"></div>
+    </div>
+
     <div id="control">
         <input class="control_button" type="checkbox" id="mask_button" onchange="DisplaySections()" checked>masked</input>
-        <input class="control_button" type="text" id="owner_name" value="Me">Enter name</input>
     </div>
 
     <div id="container">

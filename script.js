@@ -9,12 +9,17 @@ class Comment {
 }
 
 var sections = {'went_well': [], "to_improve":[], "action_items": []}
-var peer = new Peer(options={
-    secure: true,
-    host: 'peerjs-broker.herokuapp.com', 
-    port: 443,
-    path: 'myapp'
-});
+
+
+function GetNewPeer(){
+    return new Peer(options={
+        secure: true,
+        host: 'peerjs-broker.herokuapp.com', 
+        port: 443,
+        path: 'myapp'
+    });
+}
+
 
 function SetOwnerName(name){
     console.log(name)
@@ -107,6 +112,33 @@ class Room{
         this.connections = new Map()
     }
 
+    create(){
+        this.room_peer = GetNewPeer()
+        this.room_peer.on('open', (id)=>{
+            // Workaround for peer.reconnect deleting previous id
+            if (this.room_peer.id === null) {
+                console.log('Received null id from peer open');
+                this.room_peer.id = this.last_room_id;
+            } else {
+                this.last_room_id = this.room_peer.id;
+            }
+            console.log('room id: ' + this.room_peer.id);
+            console.log("Awaiting connection...");
+            DisplayRoom()
+        });
+        this.room_peer.on('connection', (new_conn)=>{
+            new_conn.on('data', (data)=>{
+                this.broadcast_data(data, new_conn.peer)
+            });
+            new_conn.on('close', ()=>{
+                this.connections.delete(new_conn);
+            });
+            this.connections.set(new_conn.peer, new_conn)
+            console.log("Connected to: " + new_conn.peer);
+            this.broadcast_status()
+        });
+    }
+    
     broadcast_data(data, sending_peer){
         this.connections.forEach(function(conn){
             if (sending_peer != conn.peer){
@@ -133,7 +165,7 @@ class MyPeer{
         this.others = []
     }
 }
-var my_peer = new MyPeer(new Peer(), null)
+var my_peer = new MyPeer(GetNewPeer(), null)
 
 
 function GetInviteUrl(room_id){
@@ -149,40 +181,6 @@ function DisplayRoom(){
     url = GetInviteUrl(room.room_peer.id)
     invite_link.href = url
     invite_link.innerHTML = url
-}
-
-
-function CreateConnection(room, new_conn){
-    new_conn.on('data', function (data) {
-        room.broadcast_data(data, new_conn.peer)
-    });
-    new_conn.on('close', function () {
-        room.connections.delete(new_conn);
-    });
-    room.connections.set(new_conn.peer, new_conn)
-    console.log("Connected to: " + new_conn.peer);
-}
-
-
-function CreateRoom(){
-    room.room_peer = new Peer()
-    room.room_peer.on('open', function (id) {
-        // Workaround for peer.reconnect deleting previous id
-        if (room.room_peer.id === null) {
-            console.log('Received null id from peer open');
-            room.room_peer.id = room.last_room_id;
-        } else {
-            room.last_room_id = room.room_peer.id;
-        }
-        console.log('room id: ' + room.room_peer.id);
-        console.log("Awaiting connection...");
-        DisplayRoom()
-    });
-    room.room_peer.on('connection', function (c) {
-        CreateConnection(room, c)
-        DisplayRoom()
-        room.broadcast_status()
-    });
 }
 
 

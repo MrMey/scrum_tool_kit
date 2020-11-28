@@ -159,13 +159,35 @@ var room = new Room()
 
 
 class MyPeer{
-    constructor(peer, conn) {
+    constructor(peer) {
         this.peer = peer
-        this.conn = conn
+        this.conn = null
         this.others = []
+        this.actions = {}
+    }
+
+    connect_to_room(room_id){
+        console.log("Trying to connect to " + room_id)
+        this.conn = this.peer.connect(room_id);
+        console.log("conn created...")
+        this.conn.on('open', ()=>{
+            console.log("Peer connection open...")
+            this.conn.send({"action":"message", "msg":"hi"});
+        });
+        
+        this.conn.on('data', (data)=>{
+            if (data["action"] in this.actions){
+                this.actions[data["action"]](data)
+            } else {
+                console.log("unknown action: " + data["action"])
+            }
+        });
     }
 }
-var my_peer = new MyPeer(GetNewPeer(), null)
+
+var my_peer = new MyPeer(GetNewPeer())
+my_peer.actions["message"] = console.log
+my_peer.actions["status"] = UpdateStatus
 
 
 function GetInviteUrl(room_id){
@@ -208,27 +230,9 @@ function UpdateStatus(status){
 }
 
 
-function ConnectToPeer(peer_id){
-    console.log("Trying to connect to " + peer_id)
-    my_peer.conn = my_peer.peer.connect(peer_id);
-    console.log("conn created...")
-    my_peer.conn.on('open', function(){
-        console.log("Peer connection open...")
-        my_peer.conn.send({"action":"message", "msg":"hi"});
-    });
-    
-    my_peer.conn.on('data', function(data){
-        console.log(data)
-        if (data["action"] == "status"){
-            UpdateStatus(data)
-        }
-    });
-}
-
-
 function ConnectToRoom(){
     peer_id = document.getElementById("room_id").value
-    ConnectToPeer(peer_id)
+    my_peer.connect_to_room(peer_id)
 }
 
 

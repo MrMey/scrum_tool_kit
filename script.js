@@ -27,18 +27,6 @@ function SetOwnerName(name){
 }
 
 
-function AddCommentToSection(comment, section){
-    sections[section].push(comment)
-    DisplaySections()
-}
-
-
-function DeleteCommentFromSection(id, section){
-    sections[section] = sections[section].filter(comment => comment.id != id)
-    DisplaySections()
-}
-
-
 function DisplayListInSection(section, section_element){
     section_list = section_element.getElementsByTagName("ul")
     if (section_list.length = 0){
@@ -62,7 +50,7 @@ function DisplayListInSection(section, section_element){
 
         delete_button = document.createElement("button")
         delete_button.innerHTML = "Delete"
-        delete_button.onclick = function(){DeleteCommentFromSection(comment.id, section);}
+        delete_button.onclick = function(){MyPeerDeleteCommentFromSection(comment.id, section);}
         comment_element.appendChild(delete_button)
 
         section_list.appendChild(comment_element)
@@ -83,7 +71,7 @@ function DisplaySection(container, section){
     add_comment.addEventListener("keyup", function(event){
         if (event.key == "Enter"){
             var comment = new Comment(event.target.value, document.getElementById("owner_name").value)
-            AddCommentToSection(comment, section)
+            MyPeerAddCommentToSection(comment, section)
         }
     })
     section_div.appendChild(add_comment)
@@ -188,6 +176,41 @@ class MyPeer{
 var my_peer = new MyPeer(GetNewPeer())
 my_peer.actions["message"] = console.log
 my_peer.actions["status"] = UpdateStatus
+
+
+function ActionAddComment(data){
+    AddCommentToSection(data['message'], data['section'])
+}
+
+function ActionDeleteComment(data){
+    DeleteCommentFromSection(data['message'], data['section'])
+}
+my_peer.actions["add_comment"] = ActionAddComment
+my_peer.actions["delete_comment"] = ActionDeleteComment
+
+
+function AddCommentToSection(comment, section){
+    sections[section].push(comment)
+    DisplaySections()
+}
+
+
+function MyPeerAddCommentToSection(comment, section){
+    AddCommentToSection(comment, section)
+    my_peer.conn.send({"action": "add_comment", "message": comment, "section": section})
+
+}
+
+function DeleteCommentFromSection(id, section){
+    sections[section] = sections[section].filter(comment => comment.id != id)
+    DisplaySections()
+}
+
+function MyPeerDeleteCommentFromSection(comment, section){
+    DeleteCommentFromSection(comment, section)
+    my_peer.conn.send({"action": "delete_comment", "message": comment, "section": section})
+
+}
 
 
 function GetInviteUrl(room_id){

@@ -12,18 +12,29 @@
 
     <header id="header"><p>Header...</p></header>
     <div id="room_container">
-        <input class="control_button" type="text" id="owner_name" value="Me">Enter name</input>
-        <input id="room_id" type="text">Enter room id</input>
-        <script type="text/javascript">DetectRoom()</script>
-        <button id="create_room" onclick="room.create()">Create room</button>
-        <button id="connect_room" onclick="ConnectToRoom()">Connect to room</button>
-        
-        <div id="invite_url_container">
-            <div id="invite_url_msg">Invitation link:</div>
-            <a id="invite_url_link"></a>
+        <div class="room_column">
+            <label for="owner_name">
+                Enter name<input class="control_button" type="text" id="owner_name" value="Me"></input>
+            </label><br>
         </div>
 
-        <div id="peer_list_container"></div>
+        <div class="room_column">
+            <label for="room_id">
+                Enter room id<input id="room_id" type="text"></input>
+            </label>
+            <script type="text/javascript">DetectRoom()</script>
+            <button id="create_room" onclick="room.create()">Create room</button>
+            <button id="connect_room" onclick="ConnectToRoom()">Connect to room</button>
+            
+            <div id="invite_url_container">
+                <div id="invite_url_msg">Invitation link:</div>
+                <a id="invite_url_link"></a>
+            </div>
+        </div>
+
+        <div class="room_column">
+            <div id="peer_list_container"></div>
+        </div>
     </div>
 
     <div id="control">

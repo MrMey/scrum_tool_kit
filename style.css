@@ -18,6 +18,18 @@ body {
     flex-direction: row;
 }
 
+#room_container {
+    border-radius: 5px;
+    background: #91A3B0;
+    display: flex;
+    flex-direction: row;
+}
+
+.room_box{
+    border: solid;
+    display: flex;
+}
+
 .column {
     border: solid;
     display: flex;

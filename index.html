@@ -1,54 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>3 Column Layout</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
-    <script type="text/javascript" src="script.js"></script>
-</head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>3 Column Layout</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+        <script type="text/javascript" src="script.js"></script>
+    </head>
 
-<body>
+    <body>
+        <header id="header">Scrum toolkit</header>
+        <div id="room_container">
+            <div class="room_column">
+                <label for="owner_name">
+                    Enter name<input class="control_button" type="text" id="owner_name" value="Me"></input>
+                </label><br>
+            </div>
 
-    <header id="header"><p>Header...</p></header>
-    <div id="room_container">
-        <div class="room_column">
-            <label for="owner_name">
-                Enter name<input class="control_button" type="text" id="owner_name" value="Me"></input>
-            </label><br>
-        </div>
+            <div class="room_column">
+                <label for="room_id">
+                    Enter room id<input id="room_id" type="text"></input>
+                </label>
+                <script type="text/javascript">DetectRoom()</script>
+                <button id="create_room" onclick="room.create()">Create room</button>
+                <button id="connect_room" onclick="ConnectToRoom()">Connect to room</button>
+                
+                <div id="invite_url_container">
+                    <div id="invite_url_msg">Invitation link:</div>
+                    <a id="invite_url_link"></a>
+                </div>
+            </div>
 
-        <div class="room_column">
-            <label for="room_id">
-                Enter room id<input id="room_id" type="text"></input>
-            </label>
-            <script type="text/javascript">DetectRoom()</script>
-            <button id="create_room" onclick="room.create()">Create room</button>
-            <button id="connect_room" onclick="ConnectToRoom()">Connect to room</button>
-            
-            <div id="invite_url_container">
-                <div id="invite_url_msg">Invitation link:</div>
-                <a id="invite_url_link"></a>
+            <div class="room_column">
+                <div id="peer_list_container"></div>
             </div>
         </div>
 
-        <div class="room_column">
-            <div id="peer_list_container"></div>
+        <div id="main">
+            <div id="control">
+                <input class="control_button" type="checkbox" id="mask_button" onchange="DisplaySections()" checked>masked</input>
+            </div>
+        
+            <div id="container">
+                <script type="text/javascript">DisplaySections()</script>
+            </div>    
         </div>
-    </div>
 
-    <div id="control">
-        <input class="control_button" type="checkbox" id="mask_button" onchange="DisplaySections()" checked>masked</input>
-    </div>
+        <footer id="footer">Footer...</footer>
 
-    <div id="container">
-        <script type="text/javascript">DisplaySections()</script>
-    </div>
-
-    <div id="footer-wrapper">
-        <footer id="footer"><p>Footer...</p></footer>
-    </div>
-
-</body>
-
+    </body>
 </html>

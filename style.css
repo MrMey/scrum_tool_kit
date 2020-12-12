@@ -1,88 +1,43 @@
-/* Layout */
-body {
-    min-width: 630px;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display:block;
+    overflow:auto;
+    font-family:Sans-serif;
+    line-height: 1.5em;
 }
 
-#control {
-    text-align: center;
-}
-
-#control .control_button{
-    display: inline-block;
-}
-
-#container {
-    padding-left: 200px;
-    padding-right: 190px;
-    display: flex;
-    flex-direction: row;
+#header {
+    margin: 0;
+    padding: 0;
+    height: 5%;
+    background: #BCCE98;
 }
 
 #room_container {
-    border-radius: 5px;
     background: #91A3B0;
     display: flex;
     flex-direction: row;
 }
 
-.room_box{
-    border: solid;
-    display: flex;
-}
-
-.column {
-    border: solid;
-    display: flex;
-    flex-direction: column;
-}
-
-.comment {
-    border: solid;
+#main {
+    margin: 0;
+    padding: 0;
+    min-height: 85%;
+    background-color: #21b9d1;
 }
 
 #footer {
-    clear: both;
-}
-
-/* IE hack */
-* html #left {
-    left: 150px;
-}
-
-/* Make the columns the same height as each other */
-#container {
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 5%;
+    background: #BCCE98;
 }
 
 #container .column {
-    padding-bottom: 1001em;
-    margin-bottom: -1000em;
-}
-
-/* Fix for the footer */
-* html body {
-    overflow: hidden;
-}
-
-* html #footer-wrapper {
-    float: left;
-    position: relative;
-    width: 100%;
-    padding-bottom: 10010px;
-    margin-bottom: -10000px;
-    background: #fff;
-}
-
-/* Aesthetics */
-body {
-    margin: 0;
-    padding: 0;
-    font-family:Sans-serif;
-    line-height: 1.5em;
-}
-
-p {
-    color: #555;
+    min-height: 80%;
+    padding-top: 1em;
 }
 
 nav ul {
@@ -96,24 +51,33 @@ nav ul a {
     text-decoration: none;
 }
 
-#header, #footer {
-    font-size: large;
-    padding: 0.3em;
-    background: #BCCE98;
+
+#control {
+    text-align: center;
 }
 
-#left {
-    background: #DAE9BC;
+#control .control_button{
+    display: inline-block;
 }
 
-#right {
-    background: #F7FDEB;
+#container {
+    overflow: auto;
+    padding-left: 3%;
+    padding-right: 3%;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: row;
 }
 
-#center {
-    background: #fff;
+.column {
+    width: 33%;
+    overflow: hidden;
+    border: solid;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0%;
 }
 
-#container .column {
-    padding-top: 1em;
+.comment {
+    border: solid;
 }

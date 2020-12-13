@@ -274,3 +274,16 @@ function DetectRoom(){
         document.getElementById("room_id").value = room_id
     }
 }
+
+
+function ToggleRoom(){
+    status = document.getElementById("room_panel").style.display
+    if (status != "none"){
+        document.getElementById("room_panel").style.display = "none"
+        document.getElementById("toggle_room_panel").innerHTML = "Display"
+    } else {
+        document.getElementById("room_panel").style.display = "inline"
+        document.getElementById("toggle_room_panel").innerHTML = "Hide"
+    }
+}
+   

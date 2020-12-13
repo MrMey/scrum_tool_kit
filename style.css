@@ -15,7 +15,16 @@ html, body {
     background: #BCCE98;
 }
 
+#room_panel {
+    display: inline-block;
+}
+
+#toggle_room_panel{
+    display: inline-block;
+}
+
 #room_container {
+    font-size: 1vw;
     background: #91A3B0;
     display: flex;
     flex-direction: row;
